@@ -8,8 +8,9 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
     private static final String PREFS_FILE = "ws.tilda.anastasia.sharedpreferencesapp.preferences";
+    private static final String KEY_EDITTEXT = "KEY_EDITTEXT" ;
     private SharedPreferences.Editor mEditor;
-    private EditText mText;
+    private EditText mEditText;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -17,8 +18,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mText = (EditText) findViewById(R.id.editText);
+        mEditText = (EditText) findViewById(R.id.editText);
         mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
+        // Resuming the stored data (in onPause method)
+        String editText = mSharedPreferences.getString(KEY_EDITTEXT,"");
+        mEditText.setText(editText);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mEditor.putString(KEY_EDITTEXT, mEditText.getText().toString());
+        mEditor.apply();
     }
 }
